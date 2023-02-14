@@ -1,5 +1,7 @@
-from helpers import *
+import helpers as h
+import cbs_index as c
 from datetime import date
+from exceptions import *
 import asyncio
 
 date_testing = [
@@ -17,18 +19,39 @@ date_testing = [
     ("1-1-19", True)
 ]
 
-async def test_date_input(date_testing: list) -> None:
-    for i in date_testing:
+async def test_get_date_object(date_testing: list) -> None:
+    for index, item in enumerate(date_testing):
         try:
-            res = isinstance(await get_date_object(i[0]), date)
+            res = isinstance(await h.get_date_object(item[0]), date)
         except DateFormattingException:
             res = False
         finally:
-            print(res == i[1])
+            output = "OK!" if res == item[1] else "FAIL"
+            print(f"{index + 1}: {output}.")
+
+
+request_testing = [
+    (None, None),
+    (9, 2022),
+    (12, None),
+    (None, 2021),
+    (1, 2019)
+]
+
+async def test_get_month_index(index_testing: list) -> None:
+    for index, item in enumerate(index_testing):
+        try:
+            res = await c.get_month_index(*item)
+        except (JsonParseException, RequestException) as e:
+            res = e
+        finally:
+            print(f"{index + 1}: result -> {res}.")
+
 
 
 async def main():
-    await test_date_input(date_testing)
+    #await test_get_date_object(date_testing)
+    await test_get_month_index(request_testing)
 
 
 
