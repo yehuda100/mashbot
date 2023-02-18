@@ -32,7 +32,14 @@ class JsonParseException(MashBotExceptions):
         self.message = message
         super().__init__(self.message)
 
-
+class UnreliableResponseException(MashBotExceptions):
+    """
+    raise an exception if the requsted date dos not match
+    the response date.
+    """
+    def __init__(self, message: str) -> None:
+        self.message = message
+        super().__init__(self.message)
 
 
 

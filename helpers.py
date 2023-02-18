@@ -1,7 +1,6 @@
 from datetime import date
 import re
-from exceptions import *
-import asyncio
+from exceptions import DateFormattingException
 
 #?IL = pytz.timezone('Israel') 
 # tz needed only in LMS updates.
@@ -29,7 +28,8 @@ async def date_formatting(str_date: str)-> tuple:
     try:
         date(*date_args)
     except ValueError as e:
-        raise DateFormattingException(f"unable to convert {str_date} to datetime object, exception message - {e}.")
+        raise DateFormattingException(f"unable to convert {str_date} to datetime \
+        object, exception message - {e}.")
     return date_args
 
 async def get_date_object(str_date: str)-> date:

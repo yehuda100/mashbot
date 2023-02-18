@@ -1,1 +1,0 @@
-#?TODO class with @propertys and/or dataclass
