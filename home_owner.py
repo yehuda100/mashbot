@@ -1,7 +1,8 @@
 from math import ceil
 from datetime import date
 from typing import Optional
-from dateutil.relativedelta import *
+from dateutil.relativedelta import relativedelta
+import mongodb as db
 
 
 class HomeOwner():
@@ -41,7 +42,7 @@ class HomeOwner():
         }
 
     @property
-    def pay_precentage(self) -> dict:
+    def pay_percentage(self) -> dict:
         return {
             1: 0.07,
             2: 0.13,
@@ -61,8 +62,8 @@ class HomeOwner():
     @property
     def amount_to_be_payd(self) -> float:
         next_payment = self.get_next_payment_number()
-        precentage_to_be_payd = sum(v for k, v in self.pay_precentage.items() if k < next_payment)
-        return self.price * precentage_to_be_payd
+        percentage_to_be_payd = sum(v for k, v in self.pay_percentage.items() if k < next_payment)
+        return self.price * percentage_to_be_payd
 
 
 
@@ -74,7 +75,7 @@ class HomeOwner():
     def get_next_payment_amount(self, num: int) -> int:
         if self.amount_payed >= self.amount_to_be_payd:
             return 0
-        amount: float = self.price * self.pay_precentage[num]
+        amount: float = self.price * self.pay_percentage[num]
         if num in (1, 2):
             return ceil(amount)
         interest: float = amount * (1.2 / 100) #! def get_interest needed !#
@@ -90,23 +91,9 @@ class HomeOwner():
         }
         return result
 
-    def save(self):
+    async def save(self):
         data = self.__dict__
-        return data
-        #TODO save home owner to db
-
-    
+        db.save_home_owner(data)
 
 
-
-
-
-
-
-
-
-
-    
-
-
-
+# by t.me/yehuda100

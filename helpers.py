@@ -2,8 +2,6 @@ from datetime import date
 import re
 from exceptions import DateFormattingException
 
-#?IL = pytz.timezone('Israel') 
-# tz needed only in LMS updates.
 
 async def is_date_pattern(str_date: str)-> bool:
     pattern = r"^\d{1,2}[.|\-|/]\d{1,2}[.|\-|/](?:\d{4}|\d{2})$"
@@ -38,7 +36,6 @@ async def get_date_object(str_date: str)-> date:
         date_args = await date_formatting(str_date)
         return date(*date_args)
     raise DateFormattingException(f"unable to vrified date format in {str_date}.")
-
 
 
 #by t.me/yehuda100

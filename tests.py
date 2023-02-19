@@ -1,5 +1,5 @@
 import helpers as h
-import cbs_index as c
+import interest as i
 from datetime import date
 from exceptions import *
 import home_owner as ho
@@ -39,12 +39,12 @@ request_testing = [
     (1, 2019)
 ]
 
-async def test_get_month_index(index_testing: list) -> None:
+async def get_month_CBS_interest(index_testing: list) -> None:
     for index, item in enumerate(index_testing):
         try:
-            res = await c.get_month_index(*item)
+            res = await i.CBS_get_month_interest(*item)
         except (JsonParseException, RequestException) as e:
-            res = e
+            raise 
         finally:
             print(f"{index + 1}: result -> {res}.")
 
@@ -55,10 +55,16 @@ async def home_owner_test():
     print(home_owner.next_payment(), "\n\n")
     print(home_owner.save())
 
+async def months_list_from_date_test():
+    l = [(2, 2023), (1, 2022), (1, 2023), (6, 2022)]
+    for d in l:
+        print(*d, "->", i.months_list_from_date(*d))
+
 async def main():
     #await test_get_date_object(date_testing)
     #await test_get_month_index(request_testing)
-    await home_owner_test()
+    #await home_owner_test()
+    await months_list_from_date_test()
 
 
 
