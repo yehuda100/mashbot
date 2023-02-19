@@ -4,3 +4,4 @@
 */
 *.db
 bot_token.py
+*.log

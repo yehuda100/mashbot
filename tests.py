@@ -22,6 +22,7 @@ date_testing = [
 
 async def test_get_date_object(date_testing: list) -> None:
     for index, item in enumerate(date_testing):
+        res = None
         try:
             res = isinstance(await h.get_date_object(item[0]), date)
         except DateFormattingException:
@@ -41,10 +42,11 @@ request_testing = [
 
 async def get_month_CBS_interest(index_testing: list) -> None:
     for index, item in enumerate(index_testing):
+        res = None
         try:
             res = await i.CBS_get_month_interest(*item)
-        except (JsonParseException, RequestException) as e:
-            raise 
+        except (CBSException, UnreliableDataException)as e:
+            res = e
         finally:
             print(f"{index + 1}: result -> {res}.")
 
@@ -53,7 +55,7 @@ async def home_owner_test():
     print(home_owner.get_next_payment_number(), "\n\n")
     print(home_owner.get_next_payment_amount(3), "\n\n")
     print(home_owner.next_payment(), "\n\n")
-    print(home_owner.save())
+    print(home_owner.__dict__)
 
 async def months_list_from_date_test():
     l = [(2, 2023), (1, 2022), (1, 2023), (6, 2022)]
@@ -61,9 +63,9 @@ async def months_list_from_date_test():
         print(*d, "->", i.months_list_from_date(*d))
 
 async def main():
-    #await test_get_date_object(date_testing)
-    #await test_get_month_index(request_testing)
-    #await home_owner_test()
+    await test_get_date_object(date_testing)
+    await get_month_CBS_interest(request_testing)
+    await home_owner_test()
     await months_list_from_date_test()
 
 

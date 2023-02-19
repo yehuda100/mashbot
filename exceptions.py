@@ -7,7 +7,7 @@ class MashBotExceptions(Exception):
     """
     def __init__(self, message: str) -> None:
         super().__init__(message)
-        logger.exception(message)
+        logger.error(message, exc_info=False)
 
 
 class DateFormattingException(MashBotExceptions):

@@ -1,16 +1,16 @@
 from datetime import date
-import re
+from re import match
 from exceptions import DateFormattingException
 
 
 async def is_date_pattern(str_date: str)-> bool:
     pattern = r"^\d{1,2}[.|\-|/]\d{1,2}[.|\-|/](?:\d{4}|\d{2})$"
-    return re.match(pattern, str_date)
+    return match(pattern, str_date)
 
 async def date_formatting(str_date: str)-> tuple:
     #split the user input date to datetime args
     splitter = ""
-    if re.match(r"^\d{2}", str_date):
+    if match(r"^\d{2}", str_date):
         splitter = str_date[2]
     else:
         splitter = str_date[1]

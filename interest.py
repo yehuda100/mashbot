@@ -71,7 +71,7 @@ async def get_month_percentage(month: int, year: int) -> float:
         try:
             result = await CBS_get_month_interest(month, year)
         except UnreliableDataException:
-            return 0.0
+            return 0.0 #! think about that.
         else:
             db.save_month_interest(result)
             return result["percent"]
