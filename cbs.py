@@ -1,14 +1,15 @@
-# Import the necessary modules and classes
 import requests
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from typing import Optional
 from exceptions import UnreliableDataException, CBSException
 
+
 # Define the API endpoint URL
 URL = "https://api.cbs.gov.il/index/data/price?id=200010"
 
 # Define a function to get the interest rate for a given month from the CBS API
+#! This function errors are NOT being handel at the moment. !#
 async def get_month_interest(month: Optional[datetime] = None) -> dict:
     """
     Get the interest rate for a specific month from the CBS API.
@@ -21,8 +22,7 @@ async def get_month_interest(month: Optional[datetime] = None) -> dict:
     """
     # If no month is provided, set it to the previous month
     if month is None:
-        month = datetime.today() + relativedelta(months= -1)
-    
+        month = datetime.today() - relativedelta(months= 1)
     # Set the query parameters for the API request
     payload = {
         "endPeriod": month.strftime("%Y-%m"),
@@ -45,7 +45,7 @@ async def get_month_interest(month: Optional[datetime] = None) -> dict:
         percent, value = data["percent"], data["currBase"]["value"]
     except (KeyError, IndexError) as e:
         # If there is an error parsing the JSON response, raise a custom CBSException with the error message
-        raise CBSException(f"Could not parse response to JSON. Error message: {e}.")
+        raise CBSException(f"Could not parse response to JSON. Error message: {e}.") 
 
     # Check if the returned data matches the requested month, raise an exception if not
     if data["year"] != month.year or data["month"] != month.month:
@@ -53,5 +53,6 @@ async def get_month_interest(month: Optional[datetime] = None) -> dict:
     
     # Return the relevant data in a dictionary
     return {"month": datetime(data["year"], data["month"], 1), "percent": percent, "value": value}
+
 
 #by t.me/yehuda100
