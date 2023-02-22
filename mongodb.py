@@ -30,7 +30,6 @@ async def get_month_interest(month: datetime) -> dict:
 async def get_data_from_date(month: datetime) -> dict:
     result = await db.interest.find({"month": {"$gte": month}})
 
-
 async def does_month_interest_exist(month: datetime) -> bool:
     result = await db.interest.find_one({"month": month}) is not None
     return result

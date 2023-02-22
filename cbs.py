@@ -1,17 +1,29 @@
+# Import the necessary modules and classes
 import requests
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from typing import Optional
 from exceptions import UnreliableDataException, CBSException
 
-
+# Define the API endpoint URL
 URL = "https://api.cbs.gov.il/index/data/price?id=200010"
 
-
+# Define a function to get the interest rate for a given month from the CBS API
 async def get_month_interest(month: Optional[datetime] = None) -> dict:
+    """
+    Get the interest rate for a specific month from the CBS API.
+
+    Args:
+        month (datetime, optional): The month to get the interest rate for. If not provided, the interest rate for the previous month will be returned.
+
+    Returns:
+        dict: A dictionary containing the month, the interest rate, and the value.
+    """
+    # If no month is provided, set it to the previous month
     if month is None:
         month = datetime.today() + relativedelta(months= -1)
     
+    # Set the query parameters for the API request
     payload = {
         "endPeriod": month.strftime("%Y-%m"),
         "last": 1,
@@ -20,24 +32,26 @@ async def get_month_interest(month: Optional[datetime] = None) -> dict:
     }
 
     try:
+        # Send a GET request to the API endpoint and parse the JSON response
         response = requests.get(URL, params=payload)
         json_response = response.json()
     except Exception as e:
-        raise CBSException(f"something went wrong with the request, \
-    see more- {e}.")
-        #! this exception does not handled yet !#
+        # If there is an error with the request, raise a custom CBSException with the error message
+        raise CBSException(f"Something went wrong with the request. Error message: {e}.")
 
     try:
+        # Extract the relevant data from the JSON response
         data = json_response["month"][0]["date"][0]
         percent, value = data["percent"], data["currBase"]["value"]
     except (KeyError, IndexError) as e:
-        raise CBSException(f"coud't parse response to json, \
-    see more-\n {e}.")
-        #! this exception does not handled yet !#
+        # If there is an error parsing the JSON response, raise a custom CBSException with the error message
+        raise CBSException(f"Could not parse response to JSON. Error message: {e}.")
 
+    # Check if the returned data matches the requested month, raise an exception if not
     if data["year"] != month.year or data["month"] != month.month:
-        raise UnreliableDataException("date {}-{} dos not match to the requested \
-    date {}.".format(data["month"], data["year"], month.strftime("%Y-%m")))
-        #! this exception does not handled yet !#
-
+        raise UnreliableDataException(f"Date {data['month']}-{data['year']} does not match the requested date {month.strftime('%Y-%m')}.")
+    
+    # Return the relevant data in a dictionary
     return {"month": datetime(data["year"], data["month"], 1), "percent": percent, "value": value}
+
+#by t.me/yehuda100
