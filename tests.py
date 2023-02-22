@@ -2,7 +2,7 @@ import helpers as h
 import interest as i
 from datetime import date
 from exceptions import *
-import home_owner as ho
+import construction_data as cd
 import asyncio
 
 date_testing = [
@@ -51,7 +51,7 @@ async def get_month_CBS_interest(index_testing: list) -> None:
             print(f"{index + 1}: result -> {res}.")
 
 async def home_owner_test():
-    home_owner = ho.HomeOwner(1, 'yehuda', date(2023, 1, 10), date(2023, 1, 31), 1625902, 600000)
+    home_owner = cd.HomeOwner(1, 'yehuda', date(2023, 1, 10), date(2023, 1, 31), 1625902, 600000)
     print(home_owner.get_next_payment_number(), "\n\n")
     print(home_owner.get_next_payment_amount(3), "\n\n")
     print(home_owner.next_payment(), "\n\n")

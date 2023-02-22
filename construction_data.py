@@ -1,25 +1,25 @@
 from math import ceil
-from datetime import date
+from datetime import datetime
 from typing import Optional
 from dateutil.relativedelta import relativedelta
 import mongodb as db
 
 
-class HomeOwner():
+class ConstructionData():
     """
     class to represent the home owner and
     calculate all the payments and interest attached.
     """
-    def __init__(self, user_id: int, name: str, permit_date: date, signing_date: date,\
-        price: int, amount_payed: Optional[int]= 0, finish_date: Optional[date]= date(2026, 6, 30),) -> None:
+    def __init__(self, user_id: int, name: str, permit_date: datetime, signing_date: datetime,\
+        price: int, amount_payed: Optional[int]= 0, finish_date: Optional[datetime]= datetime(2026, 6, 30),) -> None:
 
         self.user_id: int = user_id
         self.name: str = name
-        self.permit_date: date = permit_date
-        self.signing_date: date = signing_date
+        self.permit_date: datetime = permit_date
+        self.signing_date:datetime = signing_date
         self.price: int = price
         self.amount_payed: int = amount_payed
-        self.finish_date: date = finish_date
+        self.finish_date:datetime = finish_date
 
 
     #! the assumption is the GESHEM payment board!
@@ -43,6 +43,7 @@ class HomeOwner():
 
     @property
     def pay_percentage(self) -> dict:
+        #? to change all floats to bigger ints ?#
         return {
             1: 0.07,
             2: 0.13,
@@ -66,10 +67,9 @@ class HomeOwner():
         return self.price * percentage_to_be_payd
 
 
-
     def get_next_payment_number(self) -> int:
         for num, day in self.pay_dates.items():
-            if date.today() < day:
+            if datetime.today() < day:
                 return num
 
     def get_next_payment_amount(self, num: int) -> int:
@@ -93,7 +93,7 @@ class HomeOwner():
 
     async def save(self):
         data = self.__dict__
-        db.save_home_owner(data)
+        db.save_construction_data(data)
 
 
 # by t.me/yehuda100
